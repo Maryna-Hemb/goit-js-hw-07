@@ -36,16 +36,40 @@ function onGalleryItemChangeSize(event) {
 }
 
 function onItemModalWindowCreate() {
-  window.addEventListener("keydown", onEscModalClose);
+ 
   const instance = basicLightbox.create(`
-      <img src= "${(event.target.src = event.target.dataset.source)}">`);
+      <img src= "${(event.target.src = event.target.dataset.source)}">`
+      , 
+    {
+      onShow: (instance) => { window.addEventListener("keydown", onEscModalClose.bind(instance)) },
+      onClose: (instance) => { window.removeEventListener("keydown", onEscModalClose) }
+    }
+      );
   instance.show();
-
-  function onEscModalClose() {
-    console.log(event.code);
+  }
+  
+  function onEscModalClose(event) {
     if (event.code === "Escape") {
-      instance.close();
-      window.removeEventListener("keydown", onEscModalClose);
+      this.close()
     }
   }
-}
+  
+ 
+
+
+// ВАРІАНТ СКИДАННЯ ПО ЕСКЕЙПУ ВРУЧНУ (БЕЗ МЕТОДІВ onShow, onClose)
+
+// function onItemModalWindowCreate() {
+//   window.addEventListener("keydown", onEscModalClose);
+//   const instance = basicLightbox.create(`
+//       <img src= "${(event.target.src = event.target.dataset.source)}">`);
+//   instance.show();
+
+//   function onEscModalClose() {
+//     console.log(event.code);
+//     if (event.code === "Escape") {
+//       instance.close();
+//       window.removeEventListener("keydown", onEscModalClose);
+//     }
+//   }
+// }
